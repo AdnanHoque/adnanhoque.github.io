@@ -1,7 +1,7 @@
 ---
 permalink: /about
 layout: page
-title: About me
+title: about me
 ---
 <p align="center">
   <img src="../assets/imgs/me.jpg" width="400" height="400" />
