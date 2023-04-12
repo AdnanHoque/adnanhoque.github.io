@@ -153,12 +153,12 @@ On the appropriateness of using this type of transformers architecture for Audio
 
 # References
 \
-[1] [https://machinelearning.apple.com/research/neural-engine-transformers](https://machinelearning.apple.com/research/neural-engine-transformers)
+[1][https://machinelearning.apple.com/research/neural-engine-transformers](https://machinelearning.apple.com/research/neural-engine-transformers)
 \
-[2] [https://arxiv.org/pdf/2010.11929.pdf](https://arxiv.org/pdf/2010.11929.pdf)
+[2][https://arxiv.org/pdf/2010.11929.pdf](https://arxiv.org/pdf/2010.11929.pdf)
 \
-[3] [Audio Spectogram Transformer, Yuan Dong et al.](https://arxiv.org/pdf/2104.01778.pdf)
+[3][Audio Spectogram Transformer, Yuan Dong et al.](https://arxiv.org/pdf/2104.01778.pdf)
 \
-[4] [https://pytorch.org/blog/introducing-accelerated-pytorch-training-on-mac/](https://pytorch.org/blog/introducing-accelerated-pytorch-training-on-mac/)
+[4][https://pytorch.org/blog/introducing-accelerated-pytorch-training-on-mac/](https://pytorch.org/blog/introducing-accelerated-pytorch-training-on-mac/)
 \
-[5] [https://patents.google.com/patent/US20190340491A1/](https://patents.google.com/patent/US20190340491A1/)
+[5][https://patents.google.com/patent/US20190340491A1/](https://patents.google.com/patent/US20190340491A1/)
