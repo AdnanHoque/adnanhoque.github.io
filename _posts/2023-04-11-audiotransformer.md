@@ -152,8 +152,8 @@ In Part 2, we'll continue to develop the intuition for an optimal tensor layout 
 On the appropriateness of using this type of transformers architecture for Audio Tasks. Transformers have acheieved SOTA performance in different domains and various tasks. However, it's been shown that Transformers will only outperform CNNs when the training volume size exceeds 100 milion samples. Thus, training from scratch will yield poor results on small datasets. Due to the quadratic scaling of the self-attention mechanism with the input size, compute is also a consideration for the many researchers that do not have access to the increasing number of super-clusters owned by industrial AI labs. However, it is difficult to ignore the SOTA results in every domain the transformer has been introduced, which has in turn led to the convergence of deep leanrning architectures we have witneessed over the past few years. In part 2 I'll also discuss the Mel Spectogram, masking strategies for foundation models, training and deployment pipeline, quantization as well as neural engine performance on iPhone.
 
 # References
-[1] [https://machinelearning.apple.com/research/neural-engine-transformers](https://machinelearning.apple.com/research/neural-engine-transformers)
-[2] [https://arxiv.org/pdf/2010.11929.pdf](https://arxiv.org/pdf/2010.11929.pdf). 
-[3] [Audio Spectogram Transformer, Yuan Dong et al.](https://arxiv.org/pdf/2104.01778.pdf). 
-[4] [https://pytorch.org/blog/introducing-accelerated-pytorch-training-on-mac/](https://pytorch.org/blog/introducing-accelerated-pytorch-training-on-mac/).  
-[5] [https://patents.google.com/patent/US20190340491A1/](https://patents.google.com/patent/US20190340491A1/). 
+[1] [https://machinelearning.apple.com/research/neural-engine-transformers](https://machinelearning.apple.com/research/neural-engine-transformers)\
+[2] [https://arxiv.org/pdf/2010.11929.pdf](https://arxiv.org/pdf/2010.11929.pdf)\ 
+[3] [Audio Spectogram Transformer, Yuan Dong et al.](https://arxiv.org/pdf/2104.01778.pdf)\
+[4] [https://pytorch.org/blog/introducing-accelerated-pytorch-training-on-mac/](https://pytorch.org/blog/introducing-accelerated-pytorch-training-on-mac/)\  
+[5] [https://patents.google.com/patent/US20190340491A1/](https://patents.google.com/patent/US20190340491A1/)\ 
