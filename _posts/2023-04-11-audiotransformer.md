@@ -4,11 +4,11 @@ date: 2023-04-11
 layout: post
 ---
 
-Part one is dedicated to a discussion around the Apple Neural Engine. We will take a deep dive into the first principle discussed in [1]. Part 2, will examine the Self-Supervised Chewing Spectogram Architecture (SSCST), the audio preprocessing steps, and the deployment steps for an audio transformer that will be fine tuned to do chewing detection. The architecture and use-case is for research purposes and should not be used for commercial applications without prior permission. 
+Part one is dedicated to a discussion around the Apple Neural Engine. We will take a deep dive into the first principle discussed in [1].In Part 2, will examine the Self-Supervised Chewing Spectogram Architecture (SSCST), the audio preprocessing steps, deployment and quanitzation considerations. The architecture and use-case is for research purposes and should not be used for commercial applications without prior permission. 
 
 # 1 Transformers on Apple Silicon
 
-The insights in this section are developed from [1], the authors develop four principles to accelerate Transformers runnning on Apple Silicon. I'll discuss some of my thoughts on their first principle below.
+The discussions in this section is mainly on my analysis to [1]. The authors develop four principles to accelerate Transformers runnning on Apple Silicon. I'll discuss some of my thoughts on the first principle. In recent years there has been a surge in specialized and as Moore's Law starts to slow (as has been the trend in recent years) we will have to find new ways to squeeze performance out of the same amount of transistors. This has caused a boom in domain-specific specialized inference and training hardware accelerated being developed. Taking a look at the *Scalable Neural Network Processing Engine* Patent that Apple filed in 2018 [5], we are presented with the Neural Processor Circuit, the topic of the invention disclosure, as well as the image signal processor (ISP), CPU, and GPU. This illustrates the paradigm shift that has been taking place in-computing, and for progress to continue these types of innovations must happen all the way up and down the stack. On the transistor side we have the FinFET in 1999. The key thing to note here, miniaturization efforts for MOSFETs had stalled due to what is referred to as short channel effects. To overcome this, a third dimension was introduced in the way of thin vertical "fin" of silicon that allowed us to continue our progression. These types of breakthroughs will have to continue at the hardware, compiler, and certainly PyTorch level if we want to continue our current progression in AI. Spending some time thinking about how we might exploit our hardware is for those reasons, I think a useful excercise.
 
 # 1.1 Principle 1 — Picking the Right Data Format
 
@@ -75,7 +75,7 @@ In this case, thread T0 reads A0, thread T1 reads A1, and so on. The hardware ca
 
 # 1.3. Cache Locality 
 
-Cache locality refers to the tendency of a program to access data that is close in memory to data that has been recently accessed. There are two types of cache locality: spatial locality and temporal locality. Spatial locality means that when a piece of data is accessed, it is likely that nearby data will be accessed soon. Temporal locality means that when a piece of data is accessed, it is likely that the same data will be accessed again soon. By accessing data with good cache locality, a program can take advantage of the cache hierarchy (L1, L2, and L3 caches) in modern CPUs and GPUs, which can significantly improve performance by reducing the latency of memory accesses.
+Cache locality refers to the tendency of a program to access data that is close in memory to data that has been recently accessed. There are two types of cache locality: spatial locality and temporal locality. Spatial locality means that when a piece of data is accessed, it is likely that nearby data will be accessed soon. Temporal locality means that when a piece of data is accessed, it is likely that the same data will be accessed again soon. By accessing data with good cache locality, a program can take advantage of the cache hierarchy (L1, L2, and L3 caches) in CPUs and GPUs, which can significantly improve performance by reducing the latency of memory accesses.
 
 Again, let's illustrate this whole process with an example. Consider a 3x3 input RGB Image and 2x2 kernel.
 
@@ -121,14 +121,39 @@ CR01 = IR01 * K00 + IR02 * K01 + IR11 * K10 + IR12 * K11
 
 Since IR01 and IR11 are already in the cache from the previous step, only IR02 and IR12 need to be fetched from memory.
 
+# 1.4 Scalable Neural Network Processing Enigine
+
+From [5], I note the following mostly from the section *Operation of Segmenting of Data for Processing at Neural
+Processor Circuit*:
+
+Advancements:
+
+"*By using distributed rasterizers, no separate metadata is needed to transmit the kernel data , input data and output data among components of the neural processor circuit*"
+
+* Use of Distributed Rasterizers
+
+"*For each input channel or each sub - input channel , internal loops are provided for processing horizontal spatial support for a kernel and the vertical support within each horizontal spatial support. The spatial support refers to the
+input data for convolution with the kernel, and includes overfetched input data for performing convolution at the
+edges of the input data.*"
+
+* The hierarchical segmentation of input data and the operations performed by rasterizers in different components of the neural processor circuit may have some influence on the choice of tensor layout, which may be optimized for such hierarchical processing and efficient data handling.
+
+* Based on the hierarchy, we can divide the input data into slices and tiles. Each rasterizer will process one slice, which in this case contains two channels. For simplicity, we'll assume that the entire slice is a single tile.
+
+Rasterizer 1 will perform the convolution operation for channels 1 and 2, while Rasterizer 2 will do the same for channels 3 and 4. Since the channels are stored contiguously in memory, each rasterizer can efficiently load the input data into its data buffer, allowing for better cache locality.
+
+As each rasterizer processes its assigned channels, it can efficiently access the spatial elements within the channel, since they are stored contiguously. This enables efficient memory access patterns during the MAC (multiply-accumulate) operation.
+
+
 # Remarks
 
 In Part 2, we'll continue to develop the intuition for an optimal tensor layout for the transformer as we did for the CNN. We'll take a look at my Audio Transformer implementation mostly based on [1] and [3] but modified in certain places for my use-case, and hardware platform. Training was mainly done on Colab Pro with a single NVIDIA A100 GPU and an Apple M2 Max Pro (38 core GPU + 16 core neural engine) laptop. I was interested to learn more about the compute abilities of the M2 and to test out the "Metal Acceleration" the result of PyTorch's collaboration with Apple which saw accelerated GPU training being enabled using Apple's Metal Performance Shaders (MPS) [4]. Great for fine-tuning type tasks and protyping locally. The GPU on the M2 Max is rated for 15.6 TFlops which means it's comparable to an Nvidia RTX 3080 (without concurrent integer operations and Max TDP = 350 Watts), for a low-powered machine (Max TDP = 79 Watts) the compute capibilities of this machine are very impressive.
 
-On the appropriateness of using this type of transformers architecture for Audio Tasks. Transformers have acheieved SOTA performance in different domains and various tasks. However, it's been shown that Transformers will only outperform CNNs when the training volume size exceeds 100 milion samples. Thus, training from scratch will yield poor results on small datasets. Due to the quadratic scaling of the self-attention mechanism with the input size, compute is also a consideration for the many researchers that do not have access to the increasing number of super-clusters owned by industrial AI labs. However, it is difficult to ignore the SOTA results in every domain the transformer has been introduced, which has in turn led to the convergence of deep leanrning architectures we have witneessed over the past few years. In part 2 I'll also discuss the Mel Spectogram, masking strategy that I employed and other training strategies for foundation models, training and deployment pipeline, quantization as well and lastly neural engine performance on iPhone.
+On the appropriateness of using this type of transformers architecture for Audio Tasks. Transformers have acheieved SOTA performance in different domains and various tasks. However, it's been shown that Transformers will only outperform CNNs when the training volume size exceeds 100 milion samples. Thus, training from scratch will yield poor results on small datasets. Due to the quadratic scaling of the self-attention mechanism with the input size, compute is also a consideration for the many researchers that do not have access to the increasing number of super-clusters owned by industrial AI labs. However, it is difficult to ignore the SOTA results in every domain the transformer has been introduced, which has in turn led to the convergence of deep leanrning architectures we have witneessed over the past few years. In part 2 I'll also discuss the Mel Spectogram, masking strategies for foundation models, training and deployment pipeline, quantization as well as neural engine performance on iPhone.
 
 # Links
-[1] [https://machinelearning.apple.com/research/neural-engine-transformers](https://machinelearning.apple.com/research/neural-engine-transformers)
-[2] [https://arxiv.org/pdf/2010.11929.pdf](https://arxiv.org/pdf/2010.11929.pdf)
-[3] [Audio Spectogram Transformer, Yuan Dong et al.](https://arxiv.org/pdf/2104.01778.pdf)
-[4] [https://pytorch.org/blog/introducing-accelerated-pytorch-training-on-mac/](https://pytorch.org/blog/introducing-accelerated-pytorch-training-on-mac/)
+[1] [https://machinelearning.apple.com/research/neural-engine-transformers](https://machinelearning.apple.com/research/neural-engine-transformers)  
+[2] [https://arxiv.org/pdf/2010.11929.pdf](https://arxiv.org/pdf/2010.11929.pdf)  
+[3] [Audio Spectogram Transformer, Yuan Dong et al.](https://arxiv.org/pdf/2104.01778.pdf)  
+[4] [https://pytorch.org/blog/introducing-accelerated-pytorch-training-on-mac/](https://pytorch.org/blog/introducing-accelerated-pytorch-training-on-mac/)  
+[5] [https://patents.google.com/patent/US20190340491A1/](https://patents.google.com/patent/US20190340491A1/)  
