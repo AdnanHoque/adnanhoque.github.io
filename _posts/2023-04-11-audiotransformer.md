@@ -2,10 +2,9 @@
 title: "SSCST - Part 1"
 date: 2023-04-11
 layout: post
+subtitle: "Transformers for Audio Processing"
 ---
 
-
-# Overview
 
 Part one is dedicated to a discussion around the Apple Neural Engine. We will take a deep dive into the first principle discussed in [1]. Part 2, will examine the Self-Supervised Chewing Spectogram Architecture (SSCST), the audio preprocessing steps, and the deployment steps for an audio transformer that will be fine tuned to do chewing detection. The architecture and use-case is for research purposes and should not be used for commercial applications without prior permission. 
 
