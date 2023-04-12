@@ -1,10 +1,10 @@
 ---
-title: "SSCST - Part 1"
+title: "Audio Transformer - Part 1"
 date: 2023-04-11
 layout: post
 ---
 
-Part one is dedicated to a discussion around the Apple Neural Engine. We will take a deep dive into the first principle discussed in [1].In Part 2, will examine the Self-Supervised Chewing Spectogram Transformer (SSCST), the audio preprocessing steps, deployment and quanitzation considerations. The architecture and use-case is for research purposes and should not be used for commercial applications without prior permission. 
+Part one is dedicated to a discussion around the Apple Neural Engine. We will take a deep dive into the first principle discussed in [1]. In Part 2, we will examine the Self-Supervised Chewing Spectogram Transformer (SSCST), the audio preprocessing steps, deployment and quanitzation considerations. The architecture and use-case is for research purposes and should not be used for commercial applications without prior permission. 
 
 # 1 Transformers on Apple Silicon
 
@@ -12,7 +12,7 @@ The discussions in this section is mainly on my analysis to [1]. The authors dev
 
 # 1.1 Principle 1 — Picking the Right Data Format
 
-This is the first principle discussed in [1]  and it boils down to representing the input seqence with a (B, S, 1, C) format as opposed to the more commonly used (B, S, C). Let's explore how this tensor layout might impact performance by first examining how arrays are stored in one-dimensional linear memory.
+This is the first principle discussed in [1] and it boils down to representing the input seqence with a (B, S, 1, C) format as opposed to the more commonly used (B, S, C). Let's explore how this tensor layout might impact performance by first examining how arrays are stored in one-dimensional linear memory.
 
 PyTorch Tensors are row-major. This means that the tensors are stored in such a way that the fastest-changing dimension is the column dimension. Elements in this dimension can be accessed contiguously. Here is a simple example to illustrate what it means for a tensor to be row-major:
 
