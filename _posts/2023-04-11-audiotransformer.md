@@ -1,7 +1,7 @@
 ---
-layout: post
 title: "SSCST - Part 1"
-subtitle: "Transformers for Audio Processing"
+date: 2023-04-11
+layout: post
 ---
 
 
