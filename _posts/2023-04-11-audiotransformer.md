@@ -6,11 +6,11 @@ layout: post
 
 Part one is dedicated to a discussion around the Apple Neural Engine. We will take a deep dive into the first principle discussed in [1]. In Part 2, we will examine the Self-Supervised Chewing Spectogram Transformer (SSCST), the audio preprocessing steps, deployment and quanitzation considerations. The architecture and use-case is for research purposes and should not be used for commercial applications without prior permission. 
 
-# 1 Transformers on Apple Silicon
+# 1 — Transformers on Apple Silicon
 
 The discussions in this section is mainly on my analysis to [1]. The authors develop four principles to accelerate Transformers runnning on Apple Silicon. I'll discuss some of my thoughts on the first principle. In recent years there has been a surge in specialized and as Moore's Law starts to slow (as has been the trend in recent years) we will have to find new ways to squeeze performance out of the same amount of transistors. This has caused a boom in domain-specific specialized inference and training hardware accelerated being developed. Taking a look at the *Scalable Neural Network Processing Engine* Patent that Apple filed in 2018 [5], we are presented with the Neural Processor Circuit, the topic of the invention disclosure, as well as the image signal processor (ISP), CPU, and GPU. This illustrates the paradigm shift that has been taking place in-computing, and for progress to continue these types of innovations must happen all the way up and down the stack. On the transistor side we have the FinFET in 1999. The key thing to note here, miniaturization efforts for MOSFETs had stalled due to what is referred to as short channel effects. To overcome this, a third dimension was introduced in the way of thin vertical "fin" of silicon that allowed us to continue our progression. These types of breakthroughs will have to continue at the hardware, compiler, and certainly PyTorch level if we want to continue our current progression in AI. Spending some time thinking about how we might exploit our hardware is for those reasons, I think a useful excercise.
 
-# 1.1 Principle 1 — Picking the Right Data Format
+# 1.1 — Principle 1: Picking the Right Data Format
 
 This is the first principle discussed in [1] and it boils down to representing the input seqence with a (B, S, 1, C) format as opposed to the more commonly used (B, S, C). Let's explore how this tensor layout might impact performance by first examining how arrays are stored in one-dimensional linear memory.
 
@@ -55,7 +55,7 @@ Assume we have a single image with 3 channels (R, G, B) and 3x3 dimensions, so o
 
 For the first position in the image (0, 0), the convolution operation needs to access R00, R01, R10, R11, G00, G01, G10, G11, B00, B01, B10, and B11. Notice that these values are stored consecutively in memory which allows us to take advantage of coalesced memory access and cache locality. 
 
-# 1.2 Coalesced Memory Access
+# 1.2 — Coalesced Memory Access
 
 
 For NVIDIA GPUs this works in the following way, when threads in a warp access consecutive memory locations, the GPU hardware can combine these requests into a single transaction. This means that the data needed by all threads in the warp is fetched from memory in a single operation, reducing the number of memory transactions and improving overall performance.
@@ -73,7 +73,7 @@ Threads:  T0 T1 T2 T3 ... T31
 
 In this case, thread T0 reads A0, thread T1 reads A1, and so on. The hardware can fetch all these elements in a single memory transaction.
 
-# 1.3. Cache Locality 
+# 1.3 — Cache Locality 
 
 Cache locality refers to the tendency of a program to access data that is close in memory to data that has been recently accessed. There are two types of cache locality: spatial locality and temporal locality. Spatial locality means that when a piece of data is accessed, it is likely that nearby data will be accessed soon. Temporal locality means that when a piece of data is accessed, it is likely that the same data will be accessed again soon. By accessing data with good cache locality, a program can take advantage of the cache hierarchy (L1, L2, and L3 caches) in CPUs and GPUs, which can significantly improve performance by reducing the latency of memory accesses.
 
@@ -105,7 +105,7 @@ Input R:  IR00, IR01, IR10, IR11
 Kernel:   K00, K01, K10, K11
 ~~~
 
-2. The  GPU calculates the convolution for this region on the red channel
+2. The GPU calculates the convolution for this region on the red channel
 
 ~~~
 Convolution R (CR):
@@ -121,7 +121,7 @@ CR01 = IR01 * K00 + IR02 * K01 + IR11 * K10 + IR12 * K11
 
 Since IR01 and IR11 are already in the cache from the previous step, only IR02 and IR12 need to be fetched from memory.
 
-# 1.4 Scalable Neural Network Processing Enigine
+# 1.4 — Scalable Neural Network Processing Enigine
 
 From [5], I note the following mostly from the section *Operation of Segmenting of Data for Processing at Neural
 Processor Circuit*:
