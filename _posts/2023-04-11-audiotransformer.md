@@ -121,7 +121,7 @@ CR01 = IR01 * K00 + IR02 * K01 + IR11 * K10 + IR12 * K11
 
 Since IR01 and IR11 are already in the cache from the previous step, only IR02 and IR12 need to be fetched from memory.
 
-# 1.4 — Scalable Neural Network Processing Enigine
+# 1.4 — Scalable Neural Network Processing Engine
 
 From [5], I note the following mostly from the section *Operation of Segmenting of Data for Processing at Neural
 Processor Circuit*:
