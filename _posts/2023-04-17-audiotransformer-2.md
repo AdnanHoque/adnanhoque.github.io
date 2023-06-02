@@ -1,10 +1,10 @@
 ---
-title: "Audio Transformers - II Mel Spectogram"
+title: "Audio Transformers - II"
 date: 2023-06-01
 layout: post
 ---
 
-AudioTransformers cont.
+Discussion on Mel Spectogram.
 
 
 # 2 — Mel Spectogram
