@@ -42,10 +42,10 @@ To understand the behaviour of non-stationary signals, it is necessary to perfor
 
 A mel spectogram has an additional filtering and logarithmic scaling step, but is otherwise the same.
 
-Let's take a look at the pseudo-code for the algorihm below.
+Let's take a look at the pseudo-code for the algorithm below.
 
 <p align="center">
-  <img src="../assets/imgs/mel_latex.png" width="400" height="400" />
+  <img src="/assets/imgs/mel_latex.png" width="400" height="400" />
 </p>
 
 
