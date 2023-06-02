@@ -58,4 +58,3 @@ Note: If you are interested in deployment to Android, there is no off-the-shelf 
 \
 [2][https://developer.apple.com/documentation/accelerate/computing_the_mel_spectrum_using_linear_algebra](https://developer.apple.com/documentation/accelerate/computing_the_mel_spectrum_using_linear_algebra)
 \
-[3]
