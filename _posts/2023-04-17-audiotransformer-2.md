@@ -45,7 +45,7 @@ A mel spectogram has an additional filtering and logarithmic scaling step, but i
 Let's take a look at the pseudo-code for the algorihm below.
 
 <p align="center">
-  <img src="../assets/imgs/mel.png" width="800" height="800" />
+  <img src="../assets/imgs/mel.png" width="400" height="400" />
 </p>
 
 
